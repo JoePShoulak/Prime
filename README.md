@@ -5,6 +5,7 @@ This tests to see if numbers are prime using the Lucas-Lehmer test for Mersenne 
 
 ## Usage ##
 Use the `-m` flag to indicate the number is the exponent for the statement `(2^n)-1`.
+```
     $ make
     $ ./prime 5
       // Prime
@@ -14,3 +15,4 @@ Use the `-m` flag to indicate the number is the exponent for the statement `(2^n
       // Composite
     $ ./prime 5 -m
       // prime
+```
