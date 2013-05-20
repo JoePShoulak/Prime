@@ -1,104 +1,96 @@
-#include <iostream> // cout
-#include <math.h>   // pow
 #include <stdlib.h> // exit, EXIT_FAILURE
 #include <string.h> // string
+#include <math.h>   // pow
+#include <iostream> // cout
 
 using std::cout;
-using std::cin;
 using std::string;
 
-bool is_number(const std::string& s)
-{
-    string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
-    return !s.empty() && it == s.end();
+void Crash() {
+  printf("%s", "Usage: prime [number] [options]\n\n"
+               "Options:\n"
+               "  -m    the number (X) is to be interpreted as (2^X)-1\n");
+  exit(EXIT_FAILURE);
 }
 
-/* TODO: Find a way to take the digital sum of a
-   toTest, and take it modulo 3. If the result
-   is 0, the toTest is composite.                */
+// user-defined functions
+bool IsNumber(const std::string& s) {
+  string::const_iterator it = s.begin();
+  while (it != s.end() && std::isdigit(*it)) ++it;
+  return !s.empty() && it == s.end();
+}
 
-bool stand(int toTest) /* Test for a non-mersenne toTest */
-{
+// TODO: Find a way to take the digital sum of a
+// toTest, and take it modulo 3. If the result
+// is 0, the toTest is composite
+
+// Test for a non-mersenne prime
+bool stand(int toTest) {
   int fails;
-  if (toTest%2 == 0)
-  {
+  if (toTest%2 == 0) {
     fails = 0;
-  }
-  else
-  {
+  } else {
     fails = 1;
     int max = toTest/2;
-    for (int i=2; i<max; i++)
-    {
-      fails *= toTest % i; /* Iff a modulo is 0, fails will become 0 */
+    for (int i=2; i<max; i++) {
+      // If (and only if) any of the modulo results is 0, 'fails' will become 0
+      fails *= toTest % i;
     }
   }
   return fails != 0;
 }
 
-bool llt(int exponent) /* Primality test of Mersenne toTests, 
-                          using the Lucas-Lehmer algorithm    */
-{
-    int num = 4;
-    int max = pow(2, exponent) - 1;
-    for (int i; i < exponent-2; i++)
-    {
-      num = ( ( num*num ) - 2 ) % max;
-    }
-    return (num==0);
+// Tests for Mersenne primes
+bool llt(int exponent) {
+  // The Lucas-Lehmer algorithm
+  int num = 4;
+  int max = pow(2, exponent) - 1;
+  for (int i; i < exponent-2; i++) {
+    num = ( ( num*num ) - 2 ) % max;
+  }
+  return (num==0);
 }
 
-string example = "Eg: 'prime 5' to see if 5 is prime\n    'prime 5 -m' to see if (2^5)-1 is prime\n";
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   bool result;
-  if (argc == 1)
-  {
-    cout << "Enter a toTest to be tested\n" << example;
-    exit(EXIT_FAILURE);
-  }
-  if (argc == 2 && is_number(argv[1]))
-  {
+  if (argc == 1) {
+    Crash();
+  } else if (argc == 2 && IsNumber(argv[1])) {
     int num;
     num = atoi(argv[1]);
-    if (num > 9223372036854775800);
-    {
+    if (num > 9223372036854775800); {
       cout << "Number too large\n";
       exit(EXIT_FAILURE);
     }
     result = stand(num);
-    if (result)
-      cout << "Prime\n";
-    else
-      cout << "Composite\n";
+    if (result) {
+      printf("%s", "Prime\n");
+    } else {
+      printf("%s", "Composite\n");
+    }
     exit(EXIT_SUCCESS);
   }
-  if (argc == 3 && is_number(argv[1]) && strcmp(argv[2], "-m") == 0)
-  {
+  if (argc == 3 && IsNumber(argv[1]) && strcmp(argv[2], "-m") == 0) {
     int exp;
     exp = atoi(argv[1]);
     result = llt(exp);
-    if (result)
-      cout << "Prime\n";
-    else
-      cout << "Composite\n";
+    if (result) {
+      printf("%s", "Prime\n");
+    } else {
+      printf("%s", "Composite\n");
+    }
     exit(EXIT_SUCCESS);
+  } else {
+    Crash();
   }
-  else
-  {
-    cout << "Invalid arguments\n" << example;
-    exit(EXIT_FAILURE);
+  if (argc > 3) {
+    Crash();
   }
-  if (argc > 3)
-  {
-    cout << "Too many arguments\n" << example;
-    exit(EXIT_FAILURE);
+  if (result) {
+    printf("%s", "Prime\n");
+  } else {
+    printf("%s", "Composite\n");
   }
-  if (result)
-    cout << "Prime\n";
-  else
-    cout << "Composite\n";
   return 0;
 }
